@@ -22,6 +22,7 @@ class MainMenu(Menu):
             self.game.check_input()
             self.check_event()
 
+            self.game.display.fill((0, 0, 0))
             self.game.draw_text('Start', 50, self.game.WIDTH//2, self.game.HEIGHT//2)
 
             self.blit_screen()
@@ -29,4 +30,9 @@ class MainMenu(Menu):
     def check_event(self):
         if self.game.RETURN:
             self.run_menu = False
+            self.game.run_game = True
             print('Wyszedlem z menu')
+        if self.game.ESC:
+            self.run_menu = False
+            self.game.run_app = False
+            self.game.run_game = False
