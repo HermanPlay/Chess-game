@@ -1,17 +1,25 @@
+'''
+todo
+1. Сделать невидимый квадрат отвечающий за каждое поле на доске
+2. После выбора фигуры и нажатия на конкретный квадрат поставить туда эту фигуру
+3. Сделать проверку правильности хода
+'''
+
+
+from multiprocessing import reduction
 from menu import MainMenu
 import pygame
 from dataclasses import dataclass
 
 @dataclass
 class Figure:
-    def __init__(self, rank: str, color: bool, image: str, pos: str, first_move: bool, pov, selected: bool = False):
+    def __init__(self, rank: str, color: bool, image: str, pos: str, first_move: bool, pov):
         self.rank = rank
         self.color = color
         self.image = pygame.image.load(f'assets/figures/{image}')
         self.pos = pos
         self.first_move = first_move
         self.pov = pov
-        #self.selected = selected
         self.image_rect = self.image.get_rect()
         self.image_rect.center = (self.pov[pos][0], self.pov[pos][1])
     def get_rect(self):
@@ -54,7 +62,7 @@ class Game:
         self.RETURN = False
         self.ESC = False
 
-        self.selected = None
+        self.selected = None  # Which figure is now selected
 
         # Colors
 
@@ -62,7 +70,7 @@ class Game:
 
         #  Load assets
 
-        self.BOARD = pygame.image.load('assets/board.jpg')
+        self.BOARD_IMG = pygame.image.load('assets/board.jpg')
         self.RED_SQUARE = pygame.image.load('assets/red_square.png')
 
         #  Black
@@ -106,7 +114,7 @@ class Game:
             self.check_input()
             self.check_event()
 
-            self.display.blit(self.BOARD, (0, 0))
+            self.display.blit(self.BOARD_IMG, (0, 0))
             
 
             #  Draw sprites of figures
@@ -159,6 +167,9 @@ class Game:
 
     def check_event(self):
         if self.ESC:
+            if self.selected:
+                self.selected = None
+                return
             self.run_game = False
             self.curr_menu.run_menu = True
 
